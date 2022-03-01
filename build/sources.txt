@@ -1,0 +1,8 @@
+./src/Core/Application.java
+./src/Core/Database.java
+./src/Core/Interfaces/IDatabase.java
+./src/Core/Interfaces/IRepository.java
+./src/Models/Person.java
+./src/Repositories/Interfaces/IPersonRepository.java
+./src/Repositories/PersonRepository.java
+./src/WelcomeServlet.java
