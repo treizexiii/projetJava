@@ -115,7 +115,7 @@ public class Database implements IDatabase {
                 this.query += ", ";
                 valueQuery += ", ";
             }
-            
+
         }
         this.query += ")";
         valueQuery += ")";
@@ -150,7 +150,9 @@ public class Database implements IDatabase {
     public IEntity First() throws SQLException {
         try {
             ResultSet result = this.stmt.executeQuery();
-            result.next();
+            if (!result.next()) {
+                return null;
+            }
             Class<?> obj = Class.forName("models." + entityName);
             this.entity = obj.newInstance();
             Field[] fields = this.entity.getClass().getDeclaredFields();
@@ -173,16 +175,20 @@ public class Database implements IDatabase {
     public List<IEntity> ToList(List<IEntity> entities) throws SQLException {
         try {
             ResultSet result = this.stmt.executeQuery();
-            while (result.next()) {
-                Class<?> obj = Class.forName("models." + entityName);
-                this.entity = obj.newInstance();
-                Field[] fields = this.entity.getClass().getDeclaredFields();
-                for (Field field : fields) {
-                    if (result.getObject(field.getName()) != null) {
-                        field.set(entity, result.getObject(field.getName()));
+            if (!result.next()) {
+                return null;
+            } else {
+                do {
+                    Class<?> obj = Class.forName("models." + entityName);
+                    this.entity = obj.newInstance();
+                    Field[] fields = this.entity.getClass().getDeclaredFields();
+                    for (Field field : fields) {
+                        if (result.getObject(field.getName()) != null) {
+                            field.set(entity, result.getObject(field.getName()));
+                        }
                     }
-                }
-                entities.add((IEntity) this.entity);
+                    entities.add((IEntity) this.entity);
+                } while (result.next());
             }
             this.dispose();
             return entities;

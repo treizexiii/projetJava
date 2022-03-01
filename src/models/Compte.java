@@ -62,13 +62,11 @@ public class Compte implements IEntity {
 
     @Override
     public Object deserialize(ResultSet rawData, int columnCount) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String serrialize() {
-        // TODO Auto-generated method stub
         return null;
     }
 
