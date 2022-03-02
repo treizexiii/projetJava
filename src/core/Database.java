@@ -151,6 +151,7 @@ public class Database implements IDatabase {
         try {
             ResultSet result = this.stmt.executeQuery();
             if (!result.next()) {
+                this.dispose();
                 return null;
             }
             Class<?> obj = Class.forName("models." + entityName);
@@ -176,6 +177,7 @@ public class Database implements IDatabase {
         try {
             ResultSet result = this.stmt.executeQuery();
             if (!result.next()) {
+                this.dispose();
                 return null;
             } else {
                 do {

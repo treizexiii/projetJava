@@ -1,3 +1,5 @@
+package servlets;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -5,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import core.Application;
 import models.Compte;
@@ -17,20 +20,24 @@ public class RegisterServlet extends HttpServlet {
     public RegisterServlet() {
         super();
         Application app = new Application();
-        this._JoueursRepository = (IJoueursRepository) app.getRepository("joueursRepository");
+        this._JoueursRepository = (IJoueursRepository) app.getRepository("joueurs");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html");
-        this.getServletContext().getRequestDispatcher("/html/register-form.html").forward(request, response);
+        HttpSession session = request.getSession();
+        if (session.getAttribute("joueur") != null) {
+            this.getServletContext().getRequestDispatcher("/index").forward(request, response);
+        } else {
+            response.setContentType("text/html");
+            this.getServletContext().getRequestDispatcher("/html/register-form.jsp").forward(request, response);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
         try {
             Compte nouveauJoueur = new Compte();
             nouveauJoueur.setNom(req.getParameter("nom"));

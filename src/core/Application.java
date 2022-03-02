@@ -16,7 +16,7 @@ public class Application {
         _services.put("database", new Database());
 
         this._repository = new HashMap<String, Object>();
-        this._repository.put("joueursRepository", new JoueursRepository((IDatabase) this.getService("database")));
+        this._repository.put("joueurs", new JoueursRepository((IDatabase) this.getService("database")));
     }
 
     public Object getService(String reference) {

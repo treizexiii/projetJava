@@ -12,22 +12,43 @@
     <div class="container">
         <h1 class="title-1">Hello on index page</h1>
         <div class="form-box">
-            <h3 class="title-1">se connecter</h3>
-            <form class="form-layer" action="login" method="post">
-                <div class="form-group">
-                    <label for="login">Login:</label>
-                    <input type="text" name="login" id="">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="text" name="password" id="">
-                </div>
-                <div class="form-group">
-                    <button type="submit">Se connecter</button>
-                </div>
-            </form>
+            <c:choose>
+                <c:when test="${ empty sessionScope.joueur }">
+                    <h3 class="title-1">se connecter</h3>
+                    <c:if test="${ !empty error}">
+                        <div>
+                            <p class="error-message">
+                                <c:out value="${ error }" />
+                            </p>
+                        </div>
+                    </c:if>
+                    <form class="form-layer" action="login" method="post">
+                        <div class="form-group">
+                            <label for="login">Login:</label>
+                            <input type="text" name="login" id="">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="text" name="password" id="">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit">Se connecter</button>
+                        </div>
+                    </form>
+                    <p><a href="register-form">Pas de compte?</a></p>
+                </c:when>
+                <c:otherwise>
+                    <div>
+                        <%@ include file="html/menu.jsp" %>
+                            <c:if test="${ !empty sessionScope.joueur}">
+                                <c:if test="${ !empty sessionScope.game}">
+                                    <%@ include file="html/game.jsp" %>
+                                </c:if>
+                            </c:if>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
-        <p><a href="register-form">Pas de compte?</a></p>
     </div>
 </body>
 
