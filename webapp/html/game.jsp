@@ -18,7 +18,7 @@
                     <label class="label-game" for="west">Gauche</label>
                 </div>
                 <div class="game-form-group">
-                    <p>A :</p>
+                    <p>B :</p>
                     <input class="label-game" type="radio" name="B" value="north">
                     <label class="label-game" for="north">Haut</label>
                     <input class="label-game" type="radio" name="B" value="south">
@@ -51,7 +51,7 @@
                     <label class="label-game" for="west">Gauche</label>
                 </div>
                 <div class="form-group">
-                    <button type="submit">Déplacer</button>
+                    <button type="submit">Deplacer</button>
                 </div>
             </form>
         </div>

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import core.interfaces.IDatabase;
 import models.Compte;
+import models.Scores;
 import repositories.interfaces.IJoueursRepository;
 
 public class JoueursRepository implements IJoueursRepository {
@@ -33,6 +34,9 @@ public class JoueursRepository implements IJoueursRepository {
         // filters.put("Login", nouveauJoueur.getLogin());
         // filters.put("Motdepasse", nouveauJoueur.getMotdepasse());
         this._context.Insert(nouveauJoueur).excuteQuery();
+        Scores score = new Scores();
+        score.setLogin(nouveauJoueur.getLogin());
+        this._context.Insert(score).excuteQuery();
     }
 
 }

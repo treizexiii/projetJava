@@ -12,7 +12,7 @@
 
     <body>
         <div class="container">
-            <h1 class="title-1">Hello on index page</h1>
+            <h1 class="title-1">Projet NT2 CNAM</h1>
             <div class="form-box">
                 <h3 class="title-1">Créer un compte</h3>
                 <form class="form-layer" action="register" method="post">

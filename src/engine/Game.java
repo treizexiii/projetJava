@@ -29,9 +29,9 @@ public class Game {
             int x, y;
             do {
                 x = rand.nextInt(newGame.world.getWidth());
-                y = rand.nextInt(newGame.world.getWidth());
+                y = rand.nextInt(newGame.world.getHeight());
             } while (newGame.world.getElement(x, y).Type != StaticElementType.EMPTY
-                    && newGame.Players.get(x, y) != null);
+                    || newGame.Players.get(x, y) != null);
             newGame.Players.add(new Player(x, y, tag));
         }
         return newGame;
@@ -45,9 +45,10 @@ public class Game {
     public void playTurn(List<OrderDto> request) {
         for (OrderDto playerDto : request) {
             Player player = Players.get(playerDto.ref);
-            Players.remove(player);
-            this.movePlayer(player, Directions.valueOf(playerDto.moveTo.toUpperCase()));
-            Players.add(player);
+            // Players.remove(player);
+            if (playerDto.moveTo != Directions.NONE.toString())
+                this.movePlayer(player, Directions.valueOf(playerDto.moveTo.toUpperCase()));
+            // Players.add(player);
         }
         this.checkIsWinning();
         this.Turns++;
@@ -61,11 +62,11 @@ public class Game {
     public String drawTable() {
         String table = "";
         table += "<table class=\"city\">";
-        for (int i = 0; i < this.world.getWidth(); i++) {
+        for (int y = 0; y < this.world.getWidth(); y++) {
             table += "<tr>";
-            for (int j = 0; j < this.world.getHeight(); j++) {
+            for (int x = 0; x < this.world.getHeight(); x++) {
                 table += "<td>";
-                Player player = Players.get(i, j);
+                Player player = Players.get(x, y);
                 if (player != null) {
                     switch (player.Name) {
                         case A:
@@ -85,7 +86,7 @@ public class Game {
                             break;
                     }
                 } else {
-                    StaticElement element = this.world.getElement(i, j);
+                    StaticElement element = this.world.getElement(x, y);
                     switch (element.Type) {
                         case BUILDING:
                             table += "<div class=\"building\"></div>";

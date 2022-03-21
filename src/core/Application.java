@@ -5,6 +5,7 @@ import java.util.Map;
 
 import core.interfaces.IDatabase;
 import repositories.JoueursRepository;
+import repositories.ScoreRepository;
 
 public class Application {
 
@@ -17,6 +18,7 @@ public class Application {
 
         this._repository = new HashMap<String, Object>();
         this._repository.put("joueurs", new JoueursRepository((IDatabase) this.getService("database")));
+        this._repository.put("scores", new ScoreRepository((IDatabase) this.getService("database")));
     }
 
     public Object getService(String reference) {

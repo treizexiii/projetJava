@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import core.interfaces.IDatabase;
-import models.Compte;
 import models.interfaces.IEntity;
 
 /**
@@ -91,12 +90,12 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public IDatabase Insert(Compte nouveauJoueur) throws InstantiationException, IllegalAccessException, SQLException {
+    public IDatabase Insert(IEntity entity) throws InstantiationException, IllegalAccessException, SQLException {
         this.connection = DriverManager.getConnection(this._dbUrl, this.user, this.password);
 
         int count = 0;
         this.query = "INSERT INTO ";
-        Class<?> obj = nouveauJoueur.getClass();
+        Class<?> obj = entity.getClass();
         this.entity = obj.newInstance();
         this.entityName = obj.getName();
         String[] modelName = this.entityName.split(Pattern.quote("."));
@@ -104,13 +103,13 @@ public class Database implements IDatabase {
         this.query += "(";
         String valueQuery = " VALUES (";
 
-        Field[] values = nouveauJoueur.getClass().getDeclaredFields();
+        Field[] values = entity.getClass().getDeclaredFields();
         for (Field field : values) {
             count++;
             field.setAccessible(true);
             this.query += field.getName();
             valueQuery += "?";
-            this.params.add(field.get(nouveauJoueur));
+            this.params.add(field.get(entity));
             if (count < values.length) {
                 this.query += ", ";
                 valueQuery += ", ";
@@ -126,10 +125,41 @@ public class Database implements IDatabase {
     }
 
     @Override
+    public IDatabase Update(IEntity entity) throws InstantiationException, IllegalAccessException, SQLException {
+        this.connection = DriverManager.getConnection(this._dbUrl, this.user, this.password);
+
+        int count = 0;
+        this.query = "UPDATE ";
+        Class<?> obj = entity.getClass();
+        this.entity = obj.newInstance();
+        this.entityName = obj.getName();
+        String[] modelName = this.entityName.split(Pattern.quote("."));
+        this.query += modelName[modelName.length - 1] + " ";
+        this.query += "SET ";
+
+        Field[] values = entity.getClass().getDeclaredFields();
+        for (Field field : values) {
+            if (field.getName() != "id") {
+                count++;
+                field.setAccessible(true);
+                this.query += field.getName() + " = ?";
+                this.params.add(field.get(entity));
+                if (count < values.length - 1) {
+                    this.query += ", ";
+                }
+            }
+
+        }
+
+        this.isDisposable = true;
+        return this;
+    }
+
+    @Override
     public IDatabase excuteQuery() throws SQLException {
         try {
             this.stmt = this.connection.prepareStatement(this.query);
-            if (this.params != null) {
+            if (this.params.size() > 0) {
                 for (int x = 0; x < params.size(); x++) {
                     this.stmt.setObject(x + 1, params.get(x));
                 }
@@ -173,27 +203,29 @@ public class Database implements IDatabase {
     }
 
     @Override
-    public List<IEntity> ToList(List<IEntity> entities) throws SQLException {
+    public List<IEntity> ToList() throws SQLException {
         try {
             ResultSet result = this.stmt.executeQuery();
             if (!result.next()) {
                 this.dispose();
                 return null;
             } else {
+                List<IEntity> entities = new ArrayList<IEntity>();
                 do {
                     Class<?> obj = Class.forName("models." + entityName);
                     this.entity = obj.newInstance();
                     Field[] fields = this.entity.getClass().getDeclaredFields();
                     for (Field field : fields) {
                         if (result.getObject(field.getName()) != null) {
+                            field.setAccessible(true);
                             field.set(entity, result.getObject(field.getName()));
                         }
                     }
                     entities.add((IEntity) this.entity);
                 } while (result.next());
+                this.dispose();
+                return entities;
             }
-            this.dispose();
-            return entities;
         } catch (Exception e) {
             this.dispose();
             throw new SQLException();

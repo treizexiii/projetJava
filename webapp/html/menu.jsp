@@ -15,6 +15,7 @@
         <div class="menu">
             <c:choose>
                 <c:when test="${ empty sessionScope.isRunning }">
+                    <a href="scores"><button class="btn-menu">Voir les scores</button></a>
                     <a href="game"><button class="btn-menu">Commencer une partie</button></a>
                 </c:when>
                 <c:when test="${ !empty sessionScope.isRunning }">

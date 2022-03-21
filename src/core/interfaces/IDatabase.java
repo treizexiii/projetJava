@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import models.Compte;
 import models.interfaces.IEntity;
 
 /**
@@ -15,13 +14,15 @@ public interface IDatabase {
 
     IDatabase where(Map<String, Object> filters) throws Exception;
 
-    IDatabase Insert(Compte nouveauJoueur) throws InstantiationException, IllegalAccessException, SQLException;
+    IDatabase Insert(IEntity entity) throws InstantiationException, IllegalAccessException, SQLException;
+
+    IDatabase Update(IEntity entity) throws InstantiationException, IllegalAccessException, SQLException;
 
     IDatabase excuteQuery() throws SQLException;
 
     IEntity First() throws SQLException;
 
-    List<IEntity> ToList(List<IEntity> entities) throws SQLException;
+    List<IEntity> ToList() throws SQLException;
 
     void dispose() throws SQLException;
 }
